@@ -341,7 +341,7 @@ export default {
 		sopaCompletada: function()
 		{
 			let ok = 1;
-			for(let ip in this.palabras) if(!this.palabras[ip].e) ok = 0;
+			for(let ip in this.palabrasOk) if(!this.palabrasOk[ip].e) ok = 0;
 			return  ok;
 		},
 		palabrasOk: function(){

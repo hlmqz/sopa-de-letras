@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" style="min-width: 700px">
     <SopaDeLetras />
   </div>
 </template>

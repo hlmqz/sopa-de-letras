@@ -27,7 +27,7 @@
 			</transition>
 
 			<transition enter-active-class="zoomIn" leave-active-class="zoomOut">
-				<div v-if="timefin" class="animated absolute-center text-center bg-success text-white py-1 px-5 f-5">
+				<div v-if="timefin" class="animated absolute-center text-center bg-success text-white py-1 f-5">
 					<span>Tiempo: {{tiempoDuracion}}</span>
 				</div>
 			</transition>
