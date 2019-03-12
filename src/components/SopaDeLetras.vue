@@ -71,7 +71,7 @@ export default {
 			{
 				this.frase = frases[Math.floor(Math.random()*frases.length)%frases.length];
 				this.enJuego = false;
-				let pausa = this.getNow();
+				let pausa = Date.now();
 				this.timeadd += pausa - this.timeini;
 				this.timeini = pausa;
 			}
@@ -87,11 +87,11 @@ export default {
 		{
 			this.enJuego = true;
 			this.timeadd = 0;
-			this.timeini = this.getNow();
+			this.timeini = Date.now();
 		},
 		finalizarJuego: function()
 		{
-			this.timefin = this.getNow();
+			this.timefin = Date.now();
 		},
 		buildSopa: function()
 		{
@@ -315,11 +315,6 @@ export default {
 				}
 			}
 			this.enBuild = 0;
-		},
-		getNow()
-		{
-			let t = new Date();
-			return t.getTime();
 		}
 	},
 	computed:{
