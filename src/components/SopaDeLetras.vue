@@ -156,7 +156,7 @@ export default {
 				{
 					this.selenddata = cell;
 					self = this;
-					let e = this.palabras.find(function(op){
+					let e = this.palabrasOk.find(function(op){
 						return  ((op.d.a.x == self.selstartdata.x && 
 								op.d.a.y == self.selstartdata.y && 
 								op.d.b.x == self.selenddata.x && 
