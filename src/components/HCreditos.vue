@@ -1,7 +1,7 @@
 <template>
 <div class="creador">
 	<div class="icono">
-		<img src="/img/H-logo.svg" height="100%" width="100%">
+		<img src="img/H-logo.svg" height="100%" width="100%">
 	</div>
 	<div class="descripcion">
 		<div class="texto p-2">
