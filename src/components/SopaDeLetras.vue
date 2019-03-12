@@ -16,7 +16,7 @@
 				:tam="tam"
 				@cellSelected="selcell"
 			/>
-			<ListaPalabras :palabras="palabras"/>
+			<ListaPalabras :palabras="palabrasOk"/>
 		</div>
 	</transition>
 	<IntroJuego 
@@ -60,6 +60,7 @@ export default {
 			timefin: 0,
 			pretam: 12,
 			tam: 12,
+			multitam: 1.25,
 			tamanos:[8,9,10,11,12,13,14,15,16,17,18,19,20],
 
 		}
@@ -101,11 +102,15 @@ export default {
 			this.palabras = [];
 			let tam = this.tam;
 			let validPalabras = this.allpalabras.filter(function(p){
-				return (p.length < tam ? true : false);
+				return (p.length < tam && p.length > Math.ceil((tam/3)-1) ? true : false);
 			});
-			for(let i = 0; i < tam ; i++)
+			let tamax = Math.ceil(tam*this.multitam);
+			let rdm;
+			for(let i = 0; i < tamax ; i++)
 			{
-				this.prepalabras.push(validPalabras[Math.ceil(Math.random()*validPalabras.length)%validPalabras.length]);
+				rdm = Math.ceil(Math.random()*validPalabras.length)%validPalabras.length;
+				this.prepalabras.push(validPalabras[rdm]);
+				validPalabras.splice(rdm,1);
 			}
 			this.setPrepalabras();
 			this.defaultSopa();
@@ -115,59 +120,58 @@ export default {
 		{
 			if(!this.sopaCompletada)
 			{
-
-			for(let r = 0; r < this.tam ; r++)
-			{
-				for(let c = 0; c < this.tam ; c++)
+				for(let r = 0; r < this.tam ; r++)
 				{
-					this.sopa[r][c].c['let-sel'] = 0;
-					this.sopa[r][c].c['let-pos'] = 0;
-				}
-			}
-			if(!this.selstart)
-			{
-				let x, y;
-				let sel = cell.c['let-sel'];
-				if(!sel)
-				{
-					for(let p = 1; p < this.tam*2; p++)
+					for(let c = 0; c < this.tam ; c++)
 					{
-						for(let i = -1; i < 2; i++ )
+						this.sopa[r][c].c['let-sel'] = 0;
+						this.sopa[r][c].c['let-pos'] = 0;
+					}
+				}
+				if(!this.selstart)
+				{
+					let x, y;
+					let sel = cell.c['let-sel'];
+					if(!sel)
+					{
+						for(let p = 1; p < this.tam*2; p++)
 						{
-							for(let j = -1; j < 2; j++ )
+							for(let i = -1; i < 2; i++ )
 							{
-								x = cell.x +(p*i);
-								y = cell.y +(p*j);
-								if(x>=0&&x<this.tam && y>=0&&y<this.tam) this.sopa[y][x].c['let-pos'] = 1;
+								for(let j = -1; j < 2; j++ )
+								{
+									x = cell.x +(p*i);
+									y = cell.y +(p*j);
+									if(x>=0&&x<this.tam && y>=0&&y<this.tam) this.sopa[y][x].c['let-pos'] = 1;
+								}
 							}
 						}
+						cell.c['let-sel'] = 1;
+						cell.c['let-pos'] = 0;
+						this.selstartdata = cell;
+						this.selenddata = {};
+						this.selstart = 1; 
 					}
-					cell.c['let-sel'] = 1;
-					cell.c['let-pos'] = 0;
-					this.selstartdata = cell;
+				}else
+				{
+					this.selenddata = cell;
+					self = this;
+					let e = this.palabras.find(function(op){
+						return  ((op.d.a.x == self.selstartdata.x && 
+								op.d.a.y == self.selstartdata.y && 
+								op.d.b.x == self.selenddata.x && 
+								op.d.b.y == self.selenddata.y)||
+								(op.d.b.x == self.selstartdata.x && 
+								op.d.b.y == self.selstartdata.y && 
+								op.d.a.x == self.selenddata.x && 
+								op.d.a.y == self.selenddata.y))
+					});
+					if(e)this.marcarPalabra(e);
+					this.selstart = 0;
+					this.selstartdata = {};
 					this.selenddata = {};
-					this.selstart = 1; 
+					if(this.sopaCompletada) this.finalizarJuego();
 				}
-			}else
-			{
-				this.selenddata = cell;
-				self = this;
-				let e = this.palabras.find(function(op){
-					return  ((op.d.a.x == self.selstartdata.x && 
-							op.d.a.y == self.selstartdata.y && 
-							op.d.b.x == self.selenddata.x && 
-							op.d.b.y == self.selenddata.y)||
-							(op.d.b.x == self.selstartdata.x && 
-							op.d.b.y == self.selstartdata.y && 
-							op.d.a.x == self.selenddata.x && 
-							op.d.a.y == self.selenddata.y))
-				});
-				if(e)this.marcarPalabra(e);
-				this.selstart = 0;
-				this.selstartdata = {};
-				this.selenddata = {};
-				if(this.sopaCompletada) this.finalizarJuego();
-			}
 			}
 		},
 		marcarPalabra:function(pal)
@@ -177,7 +181,6 @@ export default {
 			{
 				ny = l*pal.d.c.y+pal.d.a.y;
 				nx = l*pal.d.c.x+pal.d.a.x;
-
 				this.sopa[ny][nx].c['let-mar'] = 1;
 				this.sopa[ny][nx].s = 1;
 				this.sopa[ny][nx].h = pal.h;
@@ -241,11 +244,12 @@ export default {
 		setPalabras: function()
 		{
 			this.palabras.sort(function(a,b){
-				return a.p.length - b.p.length ;
+				return b.p.length - a.p.length ;
 			});
-			let tx,ty;
+			let tx,ty,ok, cz, oid;
 			for (let ip in this.palabras)
 			{
+				oid=0;
 				for(let cy = 0; cy < this.tam; cy++)
 				{
 					for(let cx = 0; cx < this.tam; cx++)
@@ -254,44 +258,60 @@ export default {
 						{
 							for(let i = -1; i < 2; i++ )
 							{
-								let ok = true;
+								ok = true;
+								cz = 0;
 								for(let l=0;l<this.palabras[ip].p.length;l++)
 								{
 									ty = (l*j)+cy;
 									tx = (l*i)+cx;
 									if(tx>=0&&tx<this.tam&&ty>=0&&ty<this.tam)
 									{
-										if(this.sopa[ty][tx].l!='' && 
-											this.sopa[ty][tx].l!= this.palabras[ip].p[l]) ok = false;
+										if(this.sopa[ty][tx].l!='' && this.sopa[ty][tx].l!= this.palabras[ip].p[l]) ok = false;
+										else if (this.sopa[ty][tx].l== this.palabras[ip].p[l]) cz++;
 									}else
 									{
 										ok = false;
 									}
 								}
-								if(ok && (cx!=tx||cy!=ty)) this.palabras[ip].o.push({
-									a:{x:cx, y:cy}, 
-									b:{x:tx, y:ty},
-									c:{x:i, y:j} 
-								}); 
+								if(ok && (cx!=tx||cy!=ty))
+								{
+									oid ++;
+									this.palabras[ip].o.push({
+										a:{x:cx, y:cy}, 
+										b:{x:tx, y:ty},
+										c:{x:i, y:j},
+										id:oid,
+										z: cz, 
+									}); 
+								} 
 							}
 						}
 					}
 				}
-
+				this.palabras[ip].o.sort((oa,ob)=> (oa.a.y*this.tam + oa.a.x) < ob.a.y*this.tam + ob.a.x ? -1:1);
 				if(this.palabras[ip].o.length)
 				{
-					let r = Math.floor(Math.random()*this.palabras[ip].o.length);
-					this.putPalabra(ip,r);
+					let f =[];
+					let t = 5;
+					if(!f.length||ip%t==0) f = this.palabras[ip].o;
+					if(!f.length||ip%t==1) f = this.palabras[ip].o.filter((op)=> Math.abs(op.c.y) == 0 ?true:false);
+					if(!f.length||ip%t==2) f = this.palabras[ip].o.filter((op)=> Math.abs(op.c.x) == 0 ?true:false);
+					if(!f.length||ip%t==3) f = this.palabras[ip].o.filter((op)=> Math.abs(op.c.x) == Math.abs(op.c.y) ?true:false);
+					if(!f.length||ip%t==4) f = this.palabras[ip].o.filter((op)=> op.z?true:false);
+					if(f.length){
+						let r = Math.floor( Math.random()*f.length );
+						this.putPalabra(ip,f[r].id);
+					}
 				}
 			}
-			this.palabras = this.palabras.filter(function(pp){return pp.u});
+
 			this.fillVacios();
 		},
 		putPalabra: function(idx,r)
 		{
 			let nx, ny;
 			let p = this.palabras[idx].p;
-			let o = this.palabras[idx].o[r];
+			let o = this.palabras[idx].o.find( op => op.id == r );
 			let i = o.a;
 			let d = o.c;
 			for(let l=0;l<p.length;l++)
@@ -318,24 +338,18 @@ export default {
 		}
 	},
 	computed:{
-		ftam: function()
-		{
-			return 20+20-parseInt(this.tam)+'px';
-		},
 		sopaCompletada: function()
 		{
 			let ok = 1;
 			for(let ip in this.palabras) if(!this.palabras[ip].e) ok = 0;
 			return  ok;
+		},
+		palabrasOk: function(){
+			return this.palabras.filter(function(pp){return pp.u});
 		}
 	},
 	beforeMount: function(){
 		this.frases.sort(function(){return 0.5 - Math.random()});
-		// this.buildSopa();
-	},
-	mounted: function()
-	{
-		// document.getElementById(this.$el.id).style.display='inherit';
 	}
 }
 </script>
