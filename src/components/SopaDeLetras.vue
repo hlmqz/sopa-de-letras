@@ -229,13 +229,13 @@ export default {
 		},
 		preparePalabra: function(w)
 		{
-			w = w.toUpperCase();
-			w = w.replace(/Á/,'A');
-			w = w.replace(/É/,'E');
-			w = w.replace(/Í/,'I');
-			w = w.replace(/Ó/,'O');
-			w = w.replace(/Ú/,'U');
-			w = w.replace(/Ü/,'U');
+			w = w.toUpperCase()
+			.replace(/Á/,'A')
+			.replace(/É/,'E')
+			.replace(/Í/,'I')
+			.replace(/Ó/,'O')
+			.replace(/Ú/,'U')
+			.replace(/Ü/,'U')
 			return w;
 		},
 		setPalabras: function()
