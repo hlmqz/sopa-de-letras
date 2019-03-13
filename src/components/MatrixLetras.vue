@@ -1,11 +1,11 @@
 <template>
 <div class="animated px-1 col-12 col-md-9 col-lg-7 col-xl-5 pt-4 text-center">
 	<div class="content-lets">
-		<div v-for="(ey, eyi) in sopa" class="let-row" :style="{height: (100/tam)+'%' }">
+		<div v-for="(ey, eyi) in sopa" class="let-row" :style="{height: ctam }">
 			<div v-for="(ex, exi) in ey" 
 				class="let-cell" 
 				:class="ex.c" 
-				:style="{ width: (100/tam)+'%', 'background-color': (ex.s?ex.h:''), 'font-size': ftam }" 
+				:style="{ width: ctam, height:ctam, 'background-color': (ex.s?ex.h:''), 'font-size': ftam }" 
 				:title_="'X: '+exi+' Y: '+eyi"
 				@click="selcell(ex)" >
 				{{ex.l}}
@@ -40,7 +40,10 @@ export default {
 	computed:{
 		ftam: function()
 		{
-			return 20+20-parseInt(this.tam)+'px';
+			return 12+20-parseInt(this.tam*0.75)+'px';
+		},
+		ctam: function(){
+			return 20+20-parseInt(this.tam*0.75)+'px';
 		}
 	}
 }
