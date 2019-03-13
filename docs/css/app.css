@@ -22,11 +22,10 @@
 .absolute-center
 {
 	position: absolute;
-	top: 0;
+	top: 8px;
 	left: 0;
 	right: 0;
-	bottom: 0;
-	margin: .25rem 2rem;
+	bottom: 8px;
 }
 .bg-smoke{
 	background-color: var(--bg-smoke);
@@ -78,6 +77,10 @@ body{
 .f-9x{font-size: 9rem !important;}
 .f-10x{font-size: 10rem !important;}
 
+.btn{
+	border-radius: 0!important;
+}
+
 .frase
 {
 	font-family: 'EspecialElite';
@@ -90,7 +93,7 @@ body{
 	color:white;
 	min-width: 100px;
 	margin:4px;
-	font-size: 20px;
+	font-size: 16px;
 }
 .encontrada
 {
@@ -109,11 +112,6 @@ body{
 .content-lets
 {
 	background-color: #E1E1E1;
-	width: 520px;
-	min-width: 520px;
-	max-width: 520px;
-	height: 520px;
-	min-height: 520px;
 	border: 1px solid #F3F3F3;
 	display: inline-block;
 	flex-wrap: wrap;
@@ -143,7 +141,7 @@ body{
 }
 .let-pos
 {
-	background-color: #EDEDED;
+	background-color: #F3F3F3;
 }
 .let-mar
 {
@@ -152,7 +150,7 @@ body{
 }
 .let-sel
 {
-	background-color: #242424;
+	background-color: #242424 !important;
 	color: white;
 }
 
